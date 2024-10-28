@@ -2,6 +2,12 @@
 #include <iostream>
 using namespace std;
 
+Problem::Problem() {
+    rows = 3;
+    columns = 3;
+    cost = 0;
+}
+
 
 Problem::Problem(int puzzle [3][3], int zeroX, int zeroY) {
     //In C++ we can't assign arrays specifically to each other and must do each element one by one
@@ -15,6 +21,7 @@ Problem::Problem(int puzzle [3][3], int zeroX, int zeroY) {
     zeroTileY = zeroY;
     rows = 3;
     columns = 3;
+    cost = 0;
 }
 
 bool Problem::moveUp() {
@@ -37,6 +44,7 @@ bool Problem::moveUp() {
     zeroTileY = zeroTileY - 1; //Move Y up
     zeroTileX = zeroTileX; //But x is kept same
 
+    ++cost;
     return true;
 }
 
@@ -60,6 +68,7 @@ bool Problem::moveDown() {
     zeroTileY = zeroTileY + 1; //Move Y down
     zeroTileX = zeroTileX; //But x is kept same
 
+    ++cost;
     return true;
 }
 
@@ -83,6 +92,7 @@ bool Problem::moveLeft() {
     zeroTileY = zeroTileY; //Y stays same
     zeroTileX = zeroTileX - 1; // shift x by 1 to left
 
+    ++cost;
     return true;
 }
 
@@ -106,13 +116,37 @@ bool Problem::moveRight() {
     zeroTileY = zeroTileY; //Y stays same
     zeroTileX = zeroTileX + 1; // shift x by 1 to right
 
+    ++cost;
     return true;
 }
 
-void Problem::setNewArray(int oldarray[3][3]) {
+int Problem::getValue(int y, int x) {
+    return array[y][x];
+}
+
+int Problem::getCost() {
+    return cost;
+}
+
+bool Problem::isGoal(){
+    for(int row = 0; row < rows; ++row) {
+        for(int col = 0; col < columns; ++ col) {
+            if(goal[row][col] != array[row][col]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+void Problem::setNewArray(int oldArray[3][3]) {
     for(int r = 0; r < 3; ++r) {
         for(int c = 0; c < 3; ++c) {
-            array[r][c] = oldarray[r][c];
+            array[r][c] = oldArray[r][c];
+            if(oldArray[r][c] == 0) {
+                zeroTileX = c; 
+                zeroTileY = r; 
+            }
         }
     }
 }
