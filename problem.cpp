@@ -32,13 +32,13 @@ bool Problem::moveUp() {
     }
 
     //get num that is above zero tile to swap it
-    int temp = array[zeroTileY - 1][zeroTileX];
+    int replacedValue = array[zeroTileY - 1][zeroTileX];
 
     //Replace above tile with zero
     array[zeroTileY - 1][zeroTileX] = 0;
 
-    //Replace original zero tile location with temp
-    array[zeroTileY][zeroTileX] = temp;
+    //Replace original zero tile location with replacedValue
+    array[zeroTileY][zeroTileX] = replacedValue;
 
     //Set zeroTile locations
     zeroTileY = zeroTileY - 1; //Move Y up
@@ -56,13 +56,13 @@ bool Problem::moveDown() {
     }
 
     //get num that is below zero tile to swap it
-    int temp = array[zeroTileY + 1][zeroTileX];
+    int replacedValue = array[zeroTileY + 1][zeroTileX];
 
     //Replace below tile with zero
     array[zeroTileY + 1][zeroTileX] = 0;
 
-    //Replace original zero tile location with temp
-    array[zeroTileY][zeroTileX] = temp;
+    //Replace original zero tile location with replacedValue
+    array[zeroTileY][zeroTileX] = replacedValue;
 
     //Set zeroTile locations
     zeroTileY = zeroTileY + 1; //Move Y down
@@ -80,13 +80,13 @@ bool Problem::moveLeft() {
     }
 
     //get num that is left of zero tile to swap it
-    int temp = array[zeroTileY][zeroTileX - 1];
+    int replacedValue = array[zeroTileY][zeroTileX - 1];
 
     //Replace left tile with zero
     array[zeroTileY][zeroTileX - 1] = 0;
 
-    //Replace original zero tile location with temp
-    array[zeroTileY][zeroTileX] = temp;
+    //Replace original zero tile location with replacedValue
+    array[zeroTileY][zeroTileX] = replacedValue;
 
     //Set zeroTile locations
     zeroTileY = zeroTileY; //Y stays same
@@ -104,13 +104,13 @@ bool Problem::moveRight() {
     }
 
     //get num that is right of zero tile to swap it
-    int temp = array[zeroTileY][zeroTileX + 1];
+    int replacedValue = array[zeroTileY][zeroTileX + 1];
 
     //Replace right tile with zero
     array[zeroTileY][zeroTileX + 1] = 0;
 
-    //Replace original zero tile location with temp
-    array[zeroTileY][zeroTileX] = temp;
+    //Replace original zero tile location with replacedValue
+    array[zeroTileY][zeroTileX] = replacedValue;
 
     //Set zeroTile locations
     zeroTileY = zeroTileY; //Y stays same
