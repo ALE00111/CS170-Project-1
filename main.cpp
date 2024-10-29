@@ -20,6 +20,7 @@ int main() {
     // int puzzle [3][3]; //Change these values to match how big you want the puzzle to be
     int num1, num2, num3, num4, num5, num6, num7, num8, num9;
     int rowZero, colZero;
+    int chooseProb;
     bool validMove;
 
     cout << "Enter your puzzle, use a zero to represent the blank" << endl;
@@ -59,66 +60,35 @@ int main() {
 
     Problem prob(puzzle, rowZero, colZero);
 
-    //Print out array
-    // prob.printArray();
-    // cout << endl;
+    cout << "Enter your choice of algorithm" << endl;
+    cout << "1.Uniform Cost Search" << endl;
+    cout << "2.A* with the Misplaced Tile heuristic" << endl;
+    cout << "3.A* with the Euclidean distance heuristic" << endl;
+    cin >> chooseProb; 
+    cout << endl;
+
+    if(chooseProb == 1) {
+        //Uniform Cost Search is a blind search algorithm that uses the lowest cumulative 
+        //cost to find a path from the start to the end goal. For UCS, the h(n) is always 0 
+        //but the cost of g(n) is depneding on waht depth the node is on
+        UniformCostSearch(prob);
+    }
+    else if( chooseProb == 2) {
+        //A*: A search algorithm that calculates and searches/enqueues nodes based on the lowest heuristic cost. 
+        //A heuristic can be any constraint or calculation type we give it. For example, in a classic graph algorithm with A*, 
+        //we can use f(n) = h(n) + g(n) where h(n) is the distance for the current node n to the goal state and g(n) is the cost 
+        //amount from the start state to the current state. All of this is calculated as the heuristic (i think?...). This would be used 
+        //to find the shortest path from start to goal state.
 
 
-    //Tests
-    //Move up
-    // cout << "Moving Up" << endl;
-    // validMove = prob.moveUp();
-    // if(validMove) {
-    //     prob.printArray();
-    // }
-    // else {
-    //     cout << "Can't Move up" <<endl;
-    // }
-    // cout << endl;
-    
-    // //Move Down
-    // cout << "Moving Down" << endl;
-    // validMove = prob.moveDown();
-    // if(validMove) {
-    //     prob.printArray();
-    // }
-    //  else {
-    //     cout << "Can't Move down" <<endl;
-    // }
-    // cout << endl;
-
-    // //Move Left
-    // cout << "Moving left" << endl;
-    // validMove = prob.moveLeft();
-    // if(validMove) {
-    //     prob.printArray();
-    // }
-    //  else {
-    //     cout << "Can't Move left" <<endl;
-    // }
-    // cout << endl;
-
-    // //Move Right
-    // cout << "Moving right" << endl;
-    // validMove = prob.moveRight();
-    // if(validMove) {
-    //     prob.printArray();
-    // }
-    //  else {
-    //     cout << "Can't Move right" <<endl;
-    // }
-    // cout << endl;
-
-    // if(prob.isGoal()){
-    //     cout << "Found Goal state. It costed: " << prob.getCost() << endl;
-    // }
-    // else {
-    //     cout <<"firck" << endl;
-    // }
-
-
-
-    UniformCostSearch(prob);
+        //A* with the Misplaced Tile heuristic: While using A*, the heuristic we used to figure out what path to take is defined by 
+        //g(n): # of actions performed on initial state to reach to current state and h(n) = # of misplaced tile(s). Then the total 
+        //cost of that state would be g(n) + h(n)
+        AstarMisplaceTile(prob);
+    }
+    else if(chooseProb == 3) {
+        AstarEuclidian(prob);
+    }
 
     return 0;
 }
@@ -164,9 +134,6 @@ bool withinExplored(queue<Problem> explored, Problem choice) {
 
 void UniformCostSearch(Problem prob) {
     //Implement unfiorm cost search
-    //Uniform Cost Search is a blind search algorithm that uses the lowest cumulative 
-    //cost to find a path from the start to the end goal. For UCS, the h(n) is always 0 
-    //but the cost of g(n) is depneding on waht depth the node is on
     queue<Problem> frontier;
     frontier.push(prob); //Initialize frontier with inital state
     queue<Problem> explored;
@@ -204,7 +171,7 @@ void UniformCostSearch(Problem prob) {
             cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
             break;
         }
-        
+
         explored.push(tempFrontierFront);
         cout << "Expanding this node" << endl;
         cout << endl;
