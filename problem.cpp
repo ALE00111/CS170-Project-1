@@ -6,6 +6,7 @@ Problem::Problem() {
     rows = 3;
     columns = 3;
     cost = 0;
+    heuristic = 0;
 }
 
 
@@ -22,6 +23,7 @@ Problem::Problem(int puzzle [3][3], int zeroX, int zeroY) {
     rows = 3;
     columns = 3;
     cost = 0;
+    heuristic = 0;
 }
 
 bool Problem::moveUp() {
@@ -151,7 +153,7 @@ void Problem::setNewArray(int oldArray[3][3]) {
     }
 }
 
-void Problem::printArray() {
+void Problem::printArray() const {
     for(int r = 0; r < 3; ++r) {
         for(int c = 0; c < 3; ++c) {
             cout << array[r][c] << " ";
@@ -160,14 +162,46 @@ void Problem::printArray() {
     }
 }
 
+int Problem::numMisplacedTiles() {
+    int misplaced = 0;
+    for(int r = 0; r < 3; ++r) {
+        for(int c = 0; c < 3; ++c) {
+            if(array[r][c] != goal[r][c]) {
+                ++misplaced;
+            }
+        }
+    }
+    return misplaced;
+}
 
-void Problem::printzeroTileX() {
+void Problem::setHeuristic(int hVal) {
+    heuristic = hVal;
+}
+
+int Problem::getHeurisitc() {
+    return heuristic;
+}
+
+int Problem::estimatedCost() {
+    return heuristic + cost;
+}
+
+
+void Problem::printzeroTileX() const{
     cout << zeroTileX << endl;
 }
 
-void Problem::printzeroTileY() {
+void Problem::printzeroTileY() const{
     cout << zeroTileY << endl;
 }
 
+//Overloading Operators for priority Queue
+bool Problem::operator< (const Problem& copy) const {
+    //Overload this comparison operator to make it so it takes the smallest of the two
+    return (heuristic+ cost) > (copy.heuristic + copy.cost);
+}
 
-
+//Overloading Operators for priority Queue
+// bool Problem::operator>(const Problem& copy) const {
+//     return (heuristic+ cost) < (copy.heuristic + copy.cost);
+// }

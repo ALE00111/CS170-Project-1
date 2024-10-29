@@ -8,8 +8,8 @@ using namespace std;
 void UniformCostSearch(Problem prob);
 void AstarMisplaceTile(Problem prob);
 void AstarEuclidian(Problem prob);
-bool withinFrontier(queue<Problem> frontier, Problem choice);
-bool withinExplored(queue<Problem> explored, Problem choice);
+bool withinFrontier(priority_queue<Problem> frontier, Problem choice);
+bool withinExplored(priority_queue<Problem> explored, Problem choice);
 bool sameArray(Problem first, Problem second); 
 int MAX_FRONTIER = 0;
 
@@ -104,12 +104,12 @@ bool sameArray(Problem first, Problem second) {
     return true;
 }
 
-bool withinFrontier(queue<Problem> frontier, Problem choice){
+bool withinFrontier(priority_queue<Problem> frontier, Problem choice){
     while(!frontier.empty()){
         // if(frontier.front().array == choice.array){
         //     return true;
         // }
-        if(sameArray(frontier.front(), choice)) {
+        if(sameArray(frontier.top(), choice)) {
             return true;
         }
         frontier.pop();
@@ -117,12 +117,12 @@ bool withinFrontier(queue<Problem> frontier, Problem choice){
     return false;
 }
 
-bool withinExplored(queue<Problem> explored, Problem choice) {
+bool withinExplored(priority_queue<Problem> explored, Problem choice) {
     while(!explored.empty()){
         // if(explored.front().array == choice.array){
         //     return true;
         // }
-        if(sameArray(explored.front(), choice)) {
+        if(sameArray(explored.top(), choice)) {
             return true;
         }
         explored.pop();
@@ -134,9 +134,9 @@ bool withinExplored(queue<Problem> explored, Problem choice) {
 
 void UniformCostSearch(Problem prob) {
     //Implement unfiorm cost search
-    queue<Problem> frontier;
+    priority_queue<Problem> frontier; //Sort by cost + heuristic values from least to greatest
     frontier.push(prob); //Initialize frontier with inital state
-    queue<Problem> explored;
+    priority_queue<Problem> explored; //Sort by cost + heuristic values from least to greatest
     //For this problem a priority queue is not needed because you're inserting by cost and the cost only icnreases when the node is expanded 
     //so we must expand all ndoes of the same cost before expanding nodes with higher costs
     
@@ -149,14 +149,10 @@ void UniformCostSearch(Problem prob) {
 
     bool up, down, left, right = false;
 
-    // up = UpChoice.moveUp();
-    // down = DownChoice.moveDown();
-    // left = LeftChoice.moveLeft();
-    // right = RightChoice.moveRight();
 
     while(!frontier.empty()){
-        tempFrontierFront = frontier.front();
-        frontier.front().printArray();
+        tempFrontierFront = frontier.top();
+        frontier.top().printArray();
         frontier.pop();
         //Now removing leaf node and getting all possibilties 
         UpChoice = tempFrontierFront;
@@ -182,6 +178,16 @@ void UniformCostSearch(Problem prob) {
         right = RightChoice.moveRight();
         //For uniform cost search, the heuristic is always just the depth at which the node is at
         //On top of checking if move is valid, must also check if its repeated
+         if(right) {
+            if(!withinFrontier(frontier, RightChoice) && !withinExplored(explored, RightChoice)){
+                frontier.push(RightChoice);
+            }
+        }
+         if(left) {
+            if(!withinFrontier(frontier, LeftChoice) && !withinExplored(explored, LeftChoice)){
+                frontier.push(LeftChoice);
+            }
+        }
         if(up) {
             if(!withinFrontier(frontier, UpChoice) && !withinExplored(explored, UpChoice)){ //if no duploicate found push into frontier
                 frontier.push(UpChoice);
@@ -192,16 +198,6 @@ void UniformCostSearch(Problem prob) {
                 frontier.push(DownChoice);
             }
         }
-        if(left) {
-            if(!withinFrontier(frontier, LeftChoice) && !withinExplored(explored, LeftChoice)){
-                frontier.push(LeftChoice);
-            }
-        }
-        if(right) {
-            if(!withinFrontier(frontier, RightChoice) && !withinExplored(explored, RightChoice)){
-                frontier.push(RightChoice);
-            }
-        }
 
         if(frontier.size() > MAX_FRONTIER) {
             MAX_FRONTIER = frontier.size();
@@ -209,8 +205,90 @@ void UniformCostSearch(Problem prob) {
     }
 }
 
+
+
 void AstarMisplaceTile(Problem prob){
     //Impleent A* with Misplaced Tile Heuristic
+    // We add initial state to frontier and pop it off and expand it, when expanded we caluclate the heuristic and get its f(n) value
+    // From there, we insert it into the frontier by priority and continue to pop off and expand again until goal state found
+    //First we need to initalize a priority queue
+    priority_queue<Problem> frontier;
+    prob.setHeuristic(prob.numMisplacedTiles());
+    frontier.push(prob); //Initialize frontier with inital state
+    priority_queue<Problem> explored;
+
+    cout << prob.getHeurisitc();
+
+    Problem UpChoice; //Set problem to the possible choice moves
+    Problem DownChoice;
+    Problem LeftChoice;
+    Problem RightChoice;
+    Problem tempFrontierFront;
+
+    bool up, down, left, right = false;
+
+
+    while(!frontier.empty()){
+        tempFrontierFront = frontier.top();
+        frontier.top().printArray();
+        frontier.pop();
+        //Now removing leaf node and getting all possibilties 
+        UpChoice = tempFrontierFront;
+        DownChoice = tempFrontierFront;
+        LeftChoice = tempFrontierFront;
+        RightChoice = tempFrontierFront;
+    
+        if(tempFrontierFront.isGoal()){
+            cout << "Found Goal state!" << endl;
+            cout << "The Depth of the Goal Node: " << tempFrontierFront.getCost() << endl;
+            cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
+            cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
+            break;
+        }
+
+        explored.push(tempFrontierFront);
+        cout << "Expanding this node" << endl;
+        cout << endl;
+
+        up = UpChoice.moveUp();
+        down = DownChoice.moveDown();
+        left = LeftChoice.moveLeft();
+        right = RightChoice.moveRight();
+
+        //Now we get the heuristic by caluclating the number of misplaced tiles of each operator
+        UpChoice.setHeuristic(UpChoice.numMisplacedTiles());
+        DownChoice.setHeuristic(DownChoice.numMisplacedTiles());
+        LeftChoice.setHeuristic(LeftChoice.numMisplacedTiles());
+        RightChoice.setHeuristic(RightChoice.numMisplacedTiles());
+
+
+        //For uniform cost search, the heuristic is always just the depth at which the node is at
+        //On top of checking if move is valid, must also check if its repeated
+        if(right) {
+            if(!withinFrontier(frontier, RightChoice) && !withinExplored(explored, RightChoice)){
+                frontier.push(RightChoice);
+            }
+        }
+        if(left) {
+            if(!withinFrontier(frontier, LeftChoice) && !withinExplored(explored, LeftChoice)){
+                frontier.push(LeftChoice);
+            }
+        }
+        if(up) {
+            if(!withinFrontier(frontier, UpChoice) && !withinExplored(explored, UpChoice)){ //if no duploicate found push into frontier
+                frontier.push(UpChoice);
+            }
+        }
+        if(down) {
+            if(!withinFrontier(frontier, DownChoice) && !withinExplored(explored, DownChoice)){
+                frontier.push(DownChoice);
+            }
+        }
+
+        if(frontier.size() > MAX_FRONTIER) {
+            MAX_FRONTIER = frontier.size();
+        }
+    }
 }
 
 void AstarEuclidian(Problem prob) {
