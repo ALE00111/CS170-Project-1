@@ -217,7 +217,7 @@ void AstarMisplaceTile(Problem prob){
     frontier.push(prob); //Initialize frontier with inital state
     priority_queue<Problem> explored;
 
-    cout << prob.getHeurisitc();
+    // cout << prob.getHeurisitc();
 
     Problem UpChoice; //Set problem to the possible choice moves
     Problem DownChoice;
