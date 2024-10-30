@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <cmath>
 #include "problem.h"
 using namespace std;
 
@@ -151,7 +152,7 @@ double computeTotalHeuristic(const Problem& prob) {
     for (int row = 0; row < 3; ++row) {
         for (int col = 0; col < 3; ++col) {
             int tile = prob.array[row][col];
-            if (tile != 0) { // Skip the blank tile
+            if (tile != 0) { // Skip the zero tile
                 // Determine the target position of the tile
                 int targetRow = (tile - 1) / 3;
                 int targetCol = (tile - 1) % 3;
@@ -183,6 +184,7 @@ void UniformCostSearch(Problem prob) {
 
     while(!frontier.empty()){
         tempFrontierFront = frontier.top();
+        cout << "The best state to expand with g(n) = " << frontier.top().getCost() << " and h(n) = " << frontier.top().getHeurisitc() << " is... " << endl;
         frontier.top().printArray();
         frontier.pop();
         //Now removing leaf node and getting all possibilties 
@@ -259,6 +261,7 @@ void AstarMisplaceTile(Problem prob){
 
     while(!frontier.empty()){
         tempFrontierFront = frontier.top();
+        cout << "The best state to expand with g(n) = " << frontier.top().getCost() << " and h(n) = " << frontier.top().getHeurisitc() << " is... " << endl;
         frontier.top().printArray();
         frontier.pop();
         //Now removing leaf node and getting all possibilties 
@@ -329,10 +332,13 @@ void AstarEuclidian(Problem prob) {
 
     while (!frontier.empty()) {
         Problem current = frontier.top();
+        cout << "The best state to expand with g(n) = " << frontier.top().getCost() << " and h(n) = " << frontier.top().getHeurisitc() << " is... " << endl;
+        current.printArray();
         frontier.pop();
 
         if (current.isGoal()) {
             cout << "Found Goal state!" << endl;
+            cout << endl;
             cout << "The Depth of the Goal Node: " << current.getCost() << endl;
             cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
             cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
@@ -341,7 +347,7 @@ void AstarEuclidian(Problem prob) {
 
         explored.push(current);
         cout << "Expanding this node" << endl;
-        current.printArray();
+        cout << endl;
 
         Problem UpChoice = current, DownChoice = current, LeftChoice = current, RightChoice = current;
 
