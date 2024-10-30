@@ -146,7 +146,28 @@ bool withinExplored(priority_queue<Problem> explored, Problem choice) {
     return false;
 }
 
+double calculateEuclideanDistance(int currentRow, int currentCol, int targetRow, int targetCol) {
+    return sqrt(pow(targetRow - currentRow, 2) + pow(targetCol - currentCol, 2));
+}
 
+// Function to calculate the total heuristic for the current state
+double computeTotalHeuristic(const Problem& prob) {
+    double totalDistance = 0.0;
+    
+    for (int row = 0; row < 3; ++row) {
+        for (int col = 0; col < 3; ++col) {
+            int tile = prob.array[row][col];
+            if (tile != 0) { // Skip the blank tile
+                // Determine the target position of the tile
+                int targetRow = (tile - 1) / 3;
+                int targetCol = (tile - 1) % 3;
+                totalDistance += calculateEuclideanDistance(row, col, targetRow, targetCol);
+            }
+        }
+    }
+    
+    return totalDistance;
+}
 
 void UniformCostSearch(Problem prob) {
     //Implement unfiorm cost search
@@ -306,5 +327,57 @@ void AstarMisplaceTile(Problem prob){
 }
 
 void AstarEuclidian(Problem prob) {
-    //Impleent A* with Euclidian Distance
+    // Initialize the frontier
+    priority_queue<Problem> frontier;
+    prob.setHeuristic(computeTotalHeuristic(prob)); // Set initial heuristic
+    frontier.push(prob);
+    priority_queue<Problem> explored;
+
+    while (!frontier.empty()) {
+        Problem current = frontier.top();
+        frontier.pop();
+
+        if (current.isGoal()) {
+            cout << "Found Goal state!" << endl;
+            cout << "The Depth of the Goal Node: " << current.getCost() << endl;
+            cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
+            cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
+            return;
+        }
+
+        explored.push(current);
+        cout << "Expanding this node" << endl;
+        current.printArray();
+
+        Problem UpChoice = current, DownChoice = current, LeftChoice = current, RightChoice = current;
+
+        if (UpChoice.moveUp()) {
+            UpChoice.setHeuristic(computeTotalHeuristic(UpChoice));
+            if (!withinFrontier(frontier, UpChoice) && !withinExplored(explored, UpChoice)) {
+                frontier.push(UpChoice);
+            }
+        }
+        if (DownChoice.moveDown()) {
+            DownChoice.setHeuristic(computeTotalHeuristic(DownChoice));
+            if (!withinFrontier(frontier, DownChoice) && !withinExplored(explored, DownChoice)) {
+                frontier.push(DownChoice);
+            }
+        }
+        if (LeftChoice.moveLeft()) {
+            LeftChoice.setHeuristic(computeTotalHeuristic(LeftChoice));
+            if (!withinFrontier(frontier, LeftChoice) && !withinExplored(explored, LeftChoice)) {
+                frontier.push(LeftChoice);
+            }
+        }
+        if (RightChoice.moveRight()) {
+            RightChoice.setHeuristic(computeTotalHeuristic(RightChoice));
+            if (!withinFrontier(frontier, RightChoice) && !withinExplored(explored, RightChoice)) {
+                frontier.push(RightChoice);
+            }
+        }
+
+        if (frontier.size() > MAX_FRONTIER) {
+            MAX_FRONTIER = frontier.size();
+        }
+    }
 }
