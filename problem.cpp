@@ -200,3 +200,50 @@ bool Problem::operator< (const Problem& copy) const {
     //Overload this comparison operator to make it so it takes the smallest of the two
     return (heuristic+ cost) > (copy.heuristic + copy.cost);
 }
+
+//Overloading Operators for priority Queue
+// bool Problem::operator>(const Problem& copy) const {
+//     return (heuristic+ cost) < (copy.heuristic + copy.cost);
+// }
+
+// helper function
+pair<int, int> Problem::goalCoordinates(int puzzleNum) {
+    for (int row = 0; row < 3; row++) {
+        for (int column = 0; column < 3; column++) {
+            if(goal[row][column] == puzzleNum) { // returns the goal coordinate for the number provided
+                return {row, column};
+            }
+        }
+    }
+    return {-1, -1};   // return if number is not part of the 8-puzzle (not 0-8), 0 will be excluded for
+                        // Euclidean calculation in the actual function
+}
+
+double Problem:: computeTotalHeuristic() {
+    // the function must be double since we are dealing with sqrt and there will be decimals
+    double totalHueristic = 0.0;
+
+    for (int currentRow = 0; currentRow < 3; currentRow++) {
+        for (int currentColumn = 0; currentColumn < 3; currentColumn++) {
+            // save the numbers from the array in an int in order to use the helper later
+            int puzzleNum = array[currentRow][currentColumn];
+            // if (puzzleNum == goal[currentRow][currentColumn]) { //  not needed since it will be included
+                                                                // in calculation below anyway
+            //     totalHueristic += 0;
+            // }
+
+            if (puzzleNum != 0) { // exclude the 0 tile
+            // user helper function to get the goal coordinates for the number in the puzzle
+                pair<int, int> correctAllocation = goalCoordinates(puzzleNum);
+                // .first gets the x value, .second gets the y 
+                int goalRow = correctAllocation.first;
+                int goalColumn = correctAllocation.second;
+
+                // Euclidean distance formula 
+               totalHueristic += sqrt(pow(goalRow - currentRow, 2) + pow(goalColumn - currentColumn, 2));
+            }
+        }
+    }
+
+    return totalHueristic;
+}

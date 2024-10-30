@@ -26,6 +26,9 @@ class Problem {
             {4, 5, 6},
             {7, 8, 0}
         };
+        // Helper function to get Goal coordinates
+        pair<int, int> goalCoordinates(int puzzleNum);
+        double euclideanHeuristic();
         
     private:
         int zeroTileX; //x coordinate of the 0 tile
