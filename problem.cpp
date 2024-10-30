@@ -1,5 +1,7 @@
 #include "problem.h"
 #include <iostream>
+#include <cmath>
+#include <utility>
 using namespace std;
 
 Problem::Problem() {
@@ -219,7 +221,7 @@ pair<int, int> Problem::goalCoordinates(int puzzleNum) {
                         // Euclidean calculation in the actual function
 }
 
-double Problem:: computeTotalHeuristic() {
+double Problem::computeTotalHeuristic() {
     // the function must be double since we are dealing with sqrt and there will be decimals
     double totalHueristic = 0.0;
 
@@ -244,6 +246,5 @@ double Problem:: computeTotalHeuristic() {
             }
         }
     }
-
     return totalHueristic;
 }

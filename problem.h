@@ -1,3 +1,7 @@
+#include <iostream>
+#include <utility>
+using namespace std;
+
 
 class Problem {
     public:
@@ -26,7 +30,7 @@ class Problem {
             {4, 5, 6},
             {7, 8, 0}
         };
-        // Helper function to get Goal coordinates
+         // Helper function to get Goal coordinates
         pair<int, int> goalCoordinates(int puzzleNum);
         double computeTotalHeuristic();
         

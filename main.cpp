@@ -3,6 +3,7 @@
 #include <vector>
 #include <queue>
 #include <cmath>
+#include <utility>
 #include "problem.h"
 using namespace std;
 
@@ -310,8 +311,6 @@ void AstarEuclidian(Problem prob) {
     frontier.push(prob); //Initialize frontier with inital state
     priority_queue<Problem> explored;
 
-    cout << prob.getHeurisitc();
-
     Problem UpChoice; //Set problem to the possible choice moves
     Problem DownChoice;
     Problem LeftChoice;
@@ -379,58 +378,6 @@ void AstarEuclidian(Problem prob) {
         }
 
         if(frontier.size() > MAX_FRONTIER) {
-            MAX_FRONTIER = frontier.size();
-        }
-    }
-
-    // Initialize the frontier
-    priority_queue<Problem> frontier;
-    frontier.push(prob);
-    priority_queue<Problem> explored;
-
-    while (!frontier.empty()) {
-        Problem current = frontier.top();
-        cout << "The best state to expand with g(n) = " << frontier.top().getCost() << " and h(n) = " << frontier.top().getHeurisitc() << " is... " << endl;
-        current.printArray();
-        frontier.pop();
-
-        if (current.isGoal()) {
-            cout << "Found Goal state!" << endl;
-            cout << endl;
-            cout << "The Depth of the Goal Node: " << current.getCost() << endl;
-            cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
-            cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
-            return;
-        }
-
-        explored.push(current);
-        cout << "Expanding this node" << endl;
-        cout << endl;
-
-        Problem UpChoice = current, DownChoice = current, LeftChoice = current, RightChoice = current;
-
-        if (UpChoice.moveUp()) {
-            if (!withinFrontier(frontier, UpChoice) && !withinExplored(explored, UpChoice)) {
-                frontier.push(UpChoice);
-            }
-        }
-        if (DownChoice.moveDown()) {
-            if (!withinFrontier(frontier, DownChoice) && !withinExplored(explored, DownChoice)) {
-                frontier.push(DownChoice);
-            }
-        }
-        if (LeftChoice.moveLeft()) {
-            if (!withinFrontier(frontier, LeftChoice) && !withinExplored(explored, LeftChoice)) {
-                frontier.push(LeftChoice);
-            }
-        }
-        if (RightChoice.moveRight()) {
-            if (!withinFrontier(frontier, RightChoice) && !withinExplored(explored, RightChoice)) {
-                frontier.push(RightChoice);
-            }
-        }
-
-        if (frontier.size() > MAX_FRONTIER) {
             MAX_FRONTIER = frontier.size();
         }
     }
