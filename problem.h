@@ -12,15 +12,14 @@ class Problem {
         void printzeroTileY() const;
         void setNewArray(int oldarray[3][3]);
         void setHeuristic(int hVal);
-        int getHeurisitc();
+        int getHeurisitc() const;
         int estimatedCost();
         bool isGoal();
         int getValue(int y, int x);
-        int getCost();
+        int getCost() const;
         int numMisplacedTiles();
         //Overloading Operators for priority queue cause it can't make comparisons with other variables of type Problem
         bool operator<(const Problem& copy) const;
-        // bool operator>(const Problem& copy) const;
         int array [3][3];
         int goal [3][3] = {
             {1, 2, 3},

@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <cmath>
 #include "problem.h"
 using namespace std;
 
@@ -15,30 +16,40 @@ int MAX_FRONTIER = 0;
 
 int main() {
     cout << "Welcome to 8 puzzle solver." << endl;
-    cout << "Enter your own puzzle."  << endl;
-
+    cout << "Would you like to enter your own puzzle(1) or use deafult(2)?"  << endl;
     // int puzzle [3][3]; //Change these values to match how big you want the puzzle to be
     int num1, num2, num3, num4, num5, num6, num7, num8, num9;
     int rowZero, colZero;
+    int chooseType;
     int chooseProb;
     bool validMove;
 
-    cout << "Enter your puzzle, use a zero to represent the blank" << endl;
-    cout << "Enter the first row, use space or tabs between numbers: ";
-    cin >> num1 >> num2 >> num3;
-    cout << endl;
-    cout << "Enter the second row, use space or tabs between numbers: ";
-    cin >> num4 >> num5 >> num6;
-    cout << endl;
-    cout << "Enter the third row, use space or tabs between numbers: ";
-    cin >> num7 >> num8 >> num9;
-    cout << endl;
-
-    int puzzle [3][3] = {
-        {num1, num2, num3},
-        {num4, num5, num6},
-        {num7, num8, num9}
-    };
+    cin >> chooseType;
+    
+    if(chooseType == 1) {
+        cout << "Enter your puzzle, use a zero to represent the blank" << endl;
+        cout << "Enter the first row, use space or tabs between numbers: ";
+        cin >> num1 >> num2 >> num3;
+        cout << endl;
+        cout << "Enter the second row, use space or tabs between numbers: ";
+        cin >> num4 >> num5 >> num6;
+        cout << endl;
+        cout << "Enter the third row, use space or tabs between numbers: ";
+        cin >> num7 >> num8 >> num9;
+        cout << endl;
+    }
+    else if (chooseType == 2) {
+        //Doable case
+        num1 = 0;
+        num2 = 1; 
+        num3 = 2;
+        num4 = 4;
+        num5 = 5;
+        num6 = 3;
+        num7 = 7;
+        num8 = 8;
+        num9 = 6;
+    }
 
     //Representation of eight puzzle
     //indexesX           0  1   2
@@ -46,8 +57,14 @@ int main() {
     //              1  [ 4, 5 , 6 ]
     //              2  [ 7, 8 , 0 ]
 
+    int puzzle [3][3] = {
+        {num1, num2, num3},
+        {num4, num5, num6},
+        {num7, num8, num9}
+    };
 
 
+    //Find location of 0
     for(int i = 0; i < 3; ++i) { //Copy over contents to our own array in problem class and copy to inital
         for(int j = 0; j < 3; ++j) {
            if(puzzle[i][j] == 0) {
@@ -106,9 +123,6 @@ bool sameArray(Problem first, Problem second) {
 
 bool withinFrontier(priority_queue<Problem> frontier, Problem choice){
     while(!frontier.empty()){
-        // if(frontier.front().array == choice.array){
-        //     return true;
-        // }
         if(sameArray(frontier.top(), choice)) {
             return true;
         }
@@ -119,9 +133,6 @@ bool withinFrontier(priority_queue<Problem> frontier, Problem choice){
 
 bool withinExplored(priority_queue<Problem> explored, Problem choice) {
     while(!explored.empty()){
-        // if(explored.front().array == choice.array){
-        //     return true;
-        // }
         if(sameArray(explored.top(), choice)) {
             return true;
         }
@@ -129,8 +140,6 @@ bool withinExplored(priority_queue<Problem> explored, Problem choice) {
     }
     return false;
 }
-
-
 
 void UniformCostSearch(Problem prob) {
     //Implement unfiorm cost search
@@ -152,6 +161,7 @@ void UniformCostSearch(Problem prob) {
 
     while(!frontier.empty()){
         tempFrontierFront = frontier.top();
+        cout << "The best state to expand with g(n) = " << frontier.top().getCost() << " and h(n) = " << frontier.top().getHeurisitc() << " is... " << endl;
         frontier.top().printArray();
         frontier.pop();
         //Now removing leaf node and getting all possibilties 
@@ -217,8 +227,6 @@ void AstarMisplaceTile(Problem prob){
     frontier.push(prob); //Initialize frontier with inital state
     priority_queue<Problem> explored;
 
-    cout << prob.getHeurisitc();
-
     Problem UpChoice; //Set problem to the possible choice moves
     Problem DownChoice;
     Problem LeftChoice;
@@ -230,6 +238,7 @@ void AstarMisplaceTile(Problem prob){
 
     while(!frontier.empty()){
         tempFrontierFront = frontier.top();
+        cout << "The best state to expand with g(n) = " << frontier.top().getCost() << " and h(n) = " << frontier.top().getHeurisitc() << " is... " << endl;
         frontier.top().printArray();
         frontier.pop();
         //Now removing leaf node and getting all possibilties 
@@ -292,12 +301,13 @@ void AstarMisplaceTile(Problem prob){
 }
 
 void AstarEuclidian(Problem prob) {
+
     //Impleent A* with Euclidian Distance
     // We add initial state to frontier and pop it off and expand it, when expanded we caluclate the heuristic and get its f(n) value
     // From there, we insert it into the frontier by priority and continue to pop off and expand again until goal state found
     //First we need to initalize a priority queue
     priority_queue<Problem> frontier;
-    prob.setHeuristic(prob.euclideanHeuristic());
+    prob.setHeuristic(prob.computeTotalHeuristic());
     frontier.push(prob); //Initialize frontier with inital state
     priority_queue<Problem> explored;
 
@@ -340,10 +350,10 @@ void AstarEuclidian(Problem prob) {
         right = RightChoice.moveRight();
 
         //Now we get the heuristic by caluclating Euclidean distance (sqrt(x2-x1)^2 + (y2-y1)^2)
-        UpChoice.setHeuristic(UpChoice.euclideanHeuristic());  // new func .euclideanDist ? 
-        DownChoice.setHeuristic(DownChoice.euclideanHeuristic());
-        LeftChoice.setHeuristic(LeftChoice.euclideanHeuristic());
-        RightChoice.setHeuristic(RightChoice.euclideanHeuristic());
+        UpChoice.setHeuristic(UpChoice.computeTotalHeuristic());  // new func .euclideanDist ? 
+        DownChoice.setHeuristic(DownChoice.computeTotalHeuristic());
+        LeftChoice.setHeuristic(LeftChoice.computeTotalHeuristic());
+        RightChoice.setHeuristic(RightChoice.computeTotalHeuristic());
 
 
         //For uniform cost search, the heuristic is always just the depth at which the node is at
@@ -375,4 +385,58 @@ void AstarEuclidian(Problem prob) {
     }
 }
 
+
+
+    // Initialize the frontier
+    priority_queue<Problem> frontier;
+    frontier.push(prob);
+    priority_queue<Problem> explored;
+
+    while (!frontier.empty()) {
+        Problem current = frontier.top();
+        cout << "The best state to expand with g(n) = " << frontier.top().getCost() << " and h(n) = " << frontier.top().getHeurisitc() << " is... " << endl;
+        current.printArray();
+        frontier.pop();
+
+        if (current.isGoal()) {
+            cout << "Found Goal state!" << endl;
+            cout << endl;
+            cout << "The Depth of the Goal Node: " << current.getCost() << endl;
+            cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
+            cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
+            return;
+        }
+
+        explored.push(current);
+        cout << "Expanding this node" << endl;
+        cout << endl;
+
+        Problem UpChoice = current, DownChoice = current, LeftChoice = current, RightChoice = current;
+
+        if (UpChoice.moveUp()) {
+            if (!withinFrontier(frontier, UpChoice) && !withinExplored(explored, UpChoice)) {
+                frontier.push(UpChoice);
+            }
+        }
+        if (DownChoice.moveDown()) {
+            if (!withinFrontier(frontier, DownChoice) && !withinExplored(explored, DownChoice)) {
+                frontier.push(DownChoice);
+            }
+        }
+        if (LeftChoice.moveLeft()) {
+            if (!withinFrontier(frontier, LeftChoice) && !withinExplored(explored, LeftChoice)) {
+                frontier.push(LeftChoice);
+            }
+        }
+        if (RightChoice.moveRight()) {
+            if (!withinFrontier(frontier, RightChoice) && !withinExplored(explored, RightChoice)) {
+                frontier.push(RightChoice);
+            }
+        }
+
+        if (frontier.size() > MAX_FRONTIER) {
+            MAX_FRONTIER = frontier.size();
+        }
+    }
+}
 

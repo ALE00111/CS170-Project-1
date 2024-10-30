@@ -126,7 +126,7 @@ int Problem::getValue(int y, int x) {
     return array[y][x];
 }
 
-int Problem::getCost() {
+int Problem::getCost() const {
     return cost;
 }
 
@@ -178,7 +178,7 @@ void Problem::setHeuristic(int hVal) {
     heuristic = hVal;
 }
 
-int Problem::getHeurisitc() {
+int Problem::getHeurisitc() const {
     return heuristic;
 }
 
@@ -219,7 +219,7 @@ pair<int, int> Problem::goalCoordinates(int puzzleNum) {
                         // Euclidean calculation in the actual function
 }
 
-double Problem:: euclideanHeuristic() {
+double Problem:: computeTotalHeuristic() {
     // the function must be double since we are dealing with sqrt and there will be decimals
     double totalHueristic = 0.0;
 
