@@ -200,8 +200,3 @@ bool Problem::operator< (const Problem& copy) const {
     //Overload this comparison operator to make it so it takes the smallest of the two
     return (heuristic+ cost) > (copy.heuristic + copy.cost);
 }
-
-//Overloading Operators for priority Queue
-// bool Problem::operator>(const Problem& copy) const {
-//     return (heuristic+ cost) < (copy.heuristic + copy.cost);
-// }

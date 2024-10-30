@@ -141,29 +141,6 @@ bool withinExplored(priority_queue<Problem> explored, Problem choice) {
     return false;
 }
 
-double calculateEuclideanDistance(int currentRow, int currentCol, int targetRow, int targetCol) {
-    return sqrt(pow(targetRow - currentRow, 2) + pow(targetCol - currentCol, 2));
-}
-
-// Function to calculate the total heuristic for the current state
-double computeTotalHeuristic(const Problem& prob) {
-    double totalDistance = 0.0;
-    
-    for (int row = 0; row < 3; ++row) {
-        for (int col = 0; col < 3; ++col) {
-            int tile = prob.array[row][col];
-            if (tile != 0) { // Skip the zero tile
-                // Determine the target position of the tile
-                int targetRow = (tile - 1) / 3;
-                int targetCol = (tile - 1) % 3;
-                totalDistance += calculateEuclideanDistance(row, col, targetRow, targetCol);
-            }
-        }
-    }
-    
-    return totalDistance;
-}
-
 void UniformCostSearch(Problem prob) {
     //Implement unfiorm cost search
     priority_queue<Problem> frontier; //Sort by cost + heuristic values from least to greatest
@@ -326,7 +303,6 @@ void AstarMisplaceTile(Problem prob){
 void AstarEuclidian(Problem prob) {
     // Initialize the frontier
     priority_queue<Problem> frontier;
-    prob.setHeuristic(computeTotalHeuristic(prob)); // Set initial heuristic
     frontier.push(prob);
     priority_queue<Problem> explored;
 
@@ -352,25 +328,21 @@ void AstarEuclidian(Problem prob) {
         Problem UpChoice = current, DownChoice = current, LeftChoice = current, RightChoice = current;
 
         if (UpChoice.moveUp()) {
-            UpChoice.setHeuristic(computeTotalHeuristic(UpChoice));
             if (!withinFrontier(frontier, UpChoice) && !withinExplored(explored, UpChoice)) {
                 frontier.push(UpChoice);
             }
         }
         if (DownChoice.moveDown()) {
-            DownChoice.setHeuristic(computeTotalHeuristic(DownChoice));
             if (!withinFrontier(frontier, DownChoice) && !withinExplored(explored, DownChoice)) {
                 frontier.push(DownChoice);
             }
         }
         if (LeftChoice.moveLeft()) {
-            LeftChoice.setHeuristic(computeTotalHeuristic(LeftChoice));
             if (!withinFrontier(frontier, LeftChoice) && !withinExplored(explored, LeftChoice)) {
                 frontier.push(LeftChoice);
             }
         }
         if (RightChoice.moveRight()) {
-            RightChoice.setHeuristic(computeTotalHeuristic(RightChoice));
             if (!withinFrontier(frontier, RightChoice) && !withinExplored(explored, RightChoice)) {
                 frontier.push(RightChoice);
             }
