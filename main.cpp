@@ -40,7 +40,7 @@ int main() {
     else if (chooseType == 2) {
         //Doable case
         num1 = 0;
-        num2 = 1;
+        num2 = 1; 
         num3 = 2;
         num4 = 4;
         num5 = 5;
@@ -122,9 +122,6 @@ bool sameArray(Problem first, Problem second) {
 
 bool withinFrontier(priority_queue<Problem> frontier, Problem choice){
     while(!frontier.empty()){
-        // if(frontier.front().array == choice.array){
-        //     return true;
-        // }
         if(sameArray(frontier.top(), choice)) {
             return true;
         }
@@ -135,9 +132,6 @@ bool withinFrontier(priority_queue<Problem> frontier, Problem choice){
 
 bool withinExplored(priority_queue<Problem> explored, Problem choice) {
     while(!explored.empty()){
-        // if(explored.front().array == choice.array){
-        //     return true;
-        // }
         if(sameArray(explored.top(), choice)) {
             return true;
         }
