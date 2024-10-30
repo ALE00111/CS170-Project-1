@@ -301,7 +301,6 @@ void AstarMisplaceTile(Problem prob){
 }
 
 void AstarEuclidian(Problem prob) {
-
     //Impleent A* with Euclidian Distance
     // We add initial state to frontier and pop it off and expand it, when expanded we caluclate the heuristic and get its f(n) value
     // From there, we insert it into the frontier by priority and continue to pop off and expand again until goal state found
@@ -322,7 +321,7 @@ void AstarEuclidian(Problem prob) {
     bool up, down, left, right = false;
 
 
-    while(!frontier.empty()){
+    while(!frontier.empty()) {
         tempFrontierFront = frontier.top();
         frontier.top().printArray();
         frontier.pop();
@@ -332,7 +331,7 @@ void AstarEuclidian(Problem prob) {
         LeftChoice = tempFrontierFront;
         RightChoice = tempFrontierFront;
     
-        if(tempFrontierFront.isGoal()){
+        if(tempFrontierFront.isGoal()) {
             cout << "Found Goal state!" << endl;
             cout << "The Depth of the Goal Node: " << tempFrontierFront.getCost() << endl;
             cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
@@ -383,9 +382,6 @@ void AstarEuclidian(Problem prob) {
             MAX_FRONTIER = frontier.size();
         }
     }
-}
-
-
 
     // Initialize the frontier
     priority_queue<Problem> frontier;
