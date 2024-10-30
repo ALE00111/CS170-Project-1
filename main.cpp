@@ -293,4 +293,86 @@ void AstarMisplaceTile(Problem prob){
 
 void AstarEuclidian(Problem prob) {
     //Impleent A* with Euclidian Distance
+    // We add initial state to frontier and pop it off and expand it, when expanded we caluclate the heuristic and get its f(n) value
+    // From there, we insert it into the frontier by priority and continue to pop off and expand again until goal state found
+    //First we need to initalize a priority queue
+    priority_queue<Problem> frontier;
+    prob.setHeuristic(prob.euclideanHeuristic());
+    frontier.push(prob); //Initialize frontier with inital state
+    priority_queue<Problem> explored;
+
+    cout << prob.getHeurisitc();
+
+    Problem UpChoice; //Set problem to the possible choice moves
+    Problem DownChoice;
+    Problem LeftChoice;
+    Problem RightChoice;
+    Problem tempFrontierFront;
+
+    bool up, down, left, right = false;
+
+
+    while(!frontier.empty()){
+        tempFrontierFront = frontier.top();
+        frontier.top().printArray();
+        frontier.pop();
+        //Now removing leaf node and getting all possibilties 
+        UpChoice = tempFrontierFront;
+        DownChoice = tempFrontierFront;
+        LeftChoice = tempFrontierFront;
+        RightChoice = tempFrontierFront;
+    
+        if(tempFrontierFront.isGoal()){
+            cout << "Found Goal state!" << endl;
+            cout << "The Depth of the Goal Node: " << tempFrontierFront.getCost() << endl;
+            cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
+            cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
+            break;
+        }
+
+        explored.push(tempFrontierFront);
+        cout << "Expanding this node" << endl;
+        cout << endl;
+
+        up = UpChoice.moveUp();
+        down = DownChoice.moveDown();
+        left = LeftChoice.moveLeft();
+        right = RightChoice.moveRight();
+
+        //Now we get the heuristic by caluclating Euclidean distance (sqrt(x2-x1)^2 + (y2-y1)^2)
+        UpChoice.setHeuristic(UpChoice.euclideanHeuristic());  // new func .euclideanDist ? 
+        DownChoice.setHeuristic(DownChoice.euclideanHeuristic());
+        LeftChoice.setHeuristic(LeftChoice.euclideanHeuristic());
+        RightChoice.setHeuristic(RightChoice.euclideanHeuristic());
+
+
+        //For uniform cost search, the heuristic is always just the depth at which the node is at
+        //On top of checking if move is valid, must also check if its repeated
+        if(right) {
+            if(!withinFrontier(frontier, RightChoice) && !withinExplored(explored, RightChoice)){
+                frontier.push(RightChoice);
+            }
+        }
+        if(left) {
+            if(!withinFrontier(frontier, LeftChoice) && !withinExplored(explored, LeftChoice)){
+                frontier.push(LeftChoice);
+            }
+        }
+        if(up) {
+            if(!withinFrontier(frontier, UpChoice) && !withinExplored(explored, UpChoice)){ //if no duploicate found push into frontier
+                frontier.push(UpChoice);
+            }
+        }
+        if(down) {
+            if(!withinFrontier(frontier, DownChoice) && !withinExplored(explored, DownChoice)){
+                frontier.push(DownChoice);
+            }
+        }
+
+        if(frontier.size() > MAX_FRONTIER) {
+            MAX_FRONTIER = frontier.size();
+        }
+    }
 }
+
+
