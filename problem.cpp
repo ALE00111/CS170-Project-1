@@ -221,7 +221,7 @@ pair<int, int> Problem::goalCoordinates(int puzzleNum) {
 
 double Problem:: euclideanHeuristic() {
     // the function must be double since we are dealing with sqrt and there will be decimals
-    double hueristic = 0.0;
+    double totalHueristic = 0.0;
 
     for (int currentRow = 0; currentRow < 3; currentRow++) {
         for (int currentColumn = 0; currentColumn < 3; currentColumn++) {
@@ -229,7 +229,7 @@ double Problem:: euclideanHeuristic() {
             int puzzleNum = array[currentRow][currentColumn];
             // if (puzzleNum == goal[currentRow][currentColumn]) { //  not needed since it will be included
                                                                 // in calculation below anyway
-            //     hueristic += 0;
+            //     totalHueristic += 0;
             // }
 
             if (puzzleNum != 0) { // exclude the 0 tile
@@ -240,10 +240,10 @@ double Problem:: euclideanHeuristic() {
                 int goalColumn = correctAllocation.second;
 
                 // Euclidean distance formula 
-               hueristic += sqrt(pow(goalRow - currentRow, 2) + pow(goalColumn - currentColumn, 2));
+               totalHueristic += sqrt(pow(goalRow - currentRow, 2) + pow(goalColumn - currentColumn, 2));
             }
         }
     }
 
-    return hueristic;
+    return totalHueristic;
 }
