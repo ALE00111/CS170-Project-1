@@ -15,30 +15,40 @@ int MAX_FRONTIER = 0;
 
 int main() {
     cout << "Welcome to 8 puzzle solver." << endl;
-    cout << "Enter your own puzzle."  << endl;
-
+    cout << "Would you like to enter your own puzzle(1) or use deafult(2)?"  << endl;
     // int puzzle [3][3]; //Change these values to match how big you want the puzzle to be
     int num1, num2, num3, num4, num5, num6, num7, num8, num9;
     int rowZero, colZero;
+    int chooseType;
     int chooseProb;
     bool validMove;
 
-    cout << "Enter your puzzle, use a zero to represent the blank" << endl;
-    cout << "Enter the first row, use space or tabs between numbers: ";
-    cin >> num1 >> num2 >> num3;
-    cout << endl;
-    cout << "Enter the second row, use space or tabs between numbers: ";
-    cin >> num4 >> num5 >> num6;
-    cout << endl;
-    cout << "Enter the third row, use space or tabs between numbers: ";
-    cin >> num7 >> num8 >> num9;
-    cout << endl;
-
-    int puzzle [3][3] = {
-        {num1, num2, num3},
-        {num4, num5, num6},
-        {num7, num8, num9}
-    };
+    cin >> chooseType;
+    
+    if(chooseType == 1) {
+        cout << "Enter your puzzle, use a zero to represent the blank" << endl;
+        cout << "Enter the first row, use space or tabs between numbers: ";
+        cin >> num1 >> num2 >> num3;
+        cout << endl;
+        cout << "Enter the second row, use space or tabs between numbers: ";
+        cin >> num4 >> num5 >> num6;
+        cout << endl;
+        cout << "Enter the third row, use space or tabs between numbers: ";
+        cin >> num7 >> num8 >> num9;
+        cout << endl;
+    }
+    else if (chooseType == 2) {
+        //Doable case
+        num1 = 0;
+        num2 = 1;
+        num3 = 2;
+        num4 = 4;
+        num5 = 5;
+        num6 = 3;
+        num7 = 7;
+        num8 = 8;
+        num9 = 6;
+    }
 
     //Representation of eight puzzle
     //indexesX           0  1   2
@@ -46,8 +56,14 @@ int main() {
     //              1  [ 4, 5 , 6 ]
     //              2  [ 7, 8 , 0 ]
 
+    int puzzle [3][3] = {
+        {num1, num2, num3},
+        {num4, num5, num6},
+        {num7, num8, num9}
+    };
 
 
+    //Find location of 0
     for(int i = 0; i < 3; ++i) { //Copy over contents to our own array in problem class and copy to inital
         for(int j = 0; j < 3; ++j) {
            if(puzzle[i][j] == 0) {
@@ -216,8 +232,6 @@ void AstarMisplaceTile(Problem prob){
     prob.setHeuristic(prob.numMisplacedTiles());
     frontier.push(prob); //Initialize frontier with inital state
     priority_queue<Problem> explored;
-
-    // cout << prob.getHeurisitc();
 
     Problem UpChoice; //Set problem to the possible choice moves
     Problem DownChoice;
