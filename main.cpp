@@ -14,7 +14,7 @@ bool withinFrontier(priority_queue<Problem> frontier, Problem choice);
 bool withinExplored(priority_queue<Problem> explored, Problem choice);
 bool sameArray(Problem first, Problem second); 
 int MAX_FRONTIER = 0;
-void getGoalPath(Problem backTrace);
+void getGoalPath(Problem backTrace, Problem initial);
 void printGoalPath();
 vector<Problem> goalPath;// Is the path to the goal
 
@@ -145,13 +145,13 @@ bool withinExplored(priority_queue<Problem> explored, Problem choice) {
     return false;
 }
 
-void getGoalPath(Problem backTrace) {
-    if(backTrace.isGoal()) {
+void getGoalPath(Problem backTrace, Problem initial) {
+    if(sameArray(backTrace, initial)) {
         goalPath.push_back(backTrace);
         return;   
     }
 
-    getGoalPath(backTrace.getPrev());
+    getGoalPath(backTrace.getPrev(), initial);
     goalPath.push_back(backTrace);
 }
 
@@ -273,7 +273,7 @@ void AstarMisplaceTile(Problem prob){
             cout << "The Depth of the Goal Node: " << tempFrontierFront.getCost() << endl;
             cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
             cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
-            getGoalPath(tempFrontierFront);
+            getGoalPath(tempFrontierFront, prob);
             printGoalPath();
             break;
         }
