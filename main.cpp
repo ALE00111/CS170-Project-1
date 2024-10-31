@@ -14,6 +14,9 @@ bool withinFrontier(priority_queue<Problem> frontier, Problem choice);
 bool withinExplored(priority_queue<Problem> explored, Problem choice);
 bool sameArray(Problem first, Problem second); 
 int MAX_FRONTIER = 0;
+void getGoalPath(Problem backTrace);
+void printGoalPath();
+vector<Problem> goalPath;// Is the path to the goal
 
 int main() {
     cout << "Welcome to 8 puzzle solver." << endl;
@@ -142,6 +145,23 @@ bool withinExplored(priority_queue<Problem> explored, Problem choice) {
     return false;
 }
 
+void getGoalPath(Problem backTrace) {
+    if(backTrace.isGoal()) {
+        goalPath.push_back(backTrace);
+        return;   
+    }
+
+    getGoalPath(backTrace.getPrev());
+    goalPath.push_back(backTrace);
+}
+
+void printGoalPath() {
+    for(int i = 0; i < goalPath.size(); ++i) {
+        goalPath.at(i).printArray();
+        cout << endl;
+    }
+}
+
 void UniformCostSearch(Problem prob) {
     //Implement unfiorm cost search
     priority_queue<Problem> frontier; //Sort by cost + heuristic values from least to greatest
@@ -253,6 +273,8 @@ void AstarMisplaceTile(Problem prob){
             cout << "The Depth of the Goal Node: " << tempFrontierFront.getCost() << endl;
             cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
             cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
+            getGoalPath(tempFrontierFront);
+            printGoalPath();
             break;
         }
 

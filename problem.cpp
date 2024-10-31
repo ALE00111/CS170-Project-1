@@ -9,6 +9,7 @@ Problem::Problem() {
     columns = 3;
     cost = 0;
     heuristic = 0;
+    prev = nullptr;
 }
 
 
@@ -26,6 +27,15 @@ Problem::Problem(int puzzle [3][3], int zeroX, int zeroY) {
     columns = 3;
     cost = 0;
     heuristic = 0;
+    prev = nullptr;
+}
+
+void Problem::setPrev(Problem parent) {
+    prev = &parent;
+}
+
+Problem Problem::getPrev() {
+    return *prev;
 }
 
 bool Problem::moveUp() {

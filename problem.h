@@ -25,14 +25,11 @@ class Problem {
         //Overloading Operators for priority queue cause it can't make comparisons with other variables of type Problem
         bool operator<(const Problem& copy) const;
         int array [3][3];
-        int goal [3][3] = {
-            {1, 2, 3},
-            {4, 5, 6},
-            {7, 8, 0}
-        };
          // Helper function to get Goal coordinates
         pair<int, int> goalCoordinates(int puzzleNum);
         double computeTotalHeuristic();
+        void setPrev(Problem parent);
+        Problem getPrev();
         
     private:
         int zeroTileX; //x coordinate of the 0 tile
@@ -42,4 +39,10 @@ class Problem {
         int cost;
         int heuristic;
         int inital[3][3];
+        Problem* prev;
+        int goal [3][3] = {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 0}
+        };
 };
