@@ -14,23 +14,24 @@ bool withinFrontier(priority_queue<Problem> frontier, Problem choice);
 bool withinExplored(priority_queue<Problem> explored, Problem choice);
 bool sameArray(Problem first, Problem second); 
 int MAX_FRONTIER = 0;
-void getGoalPath(Problem backTrace, Problem initial);
-void printGoalPath();
 vector<Problem> goalPath;// Is the path to the goal
 
 int main() {
     cout << "Welcome to 8 puzzle solver." << endl;
     cout << "Would you like to enter your own puzzle(1) or use deafult(2)?"  << endl;
-    // int puzzle [3][3]; //Change these values to match how big you want the puzzle to be
-    int num1, num2, num3, num4, num5, num6, num7, num8, num9;
+
+    const int row = 3; //Make sure to change this value to the size needed
+    const int column = 3; //Make sure to change this value to the size needed
+
+    int num1, num2, num3, num4, num5, num6, num7, num8, num9; //Change the number of inputs needed to accoutn for puzzle size
     int rowZero, colZero;
     int chooseType;
     int chooseProb;
-    bool validMove;
 
     cin >> chooseType;
     
     if(chooseType == 1) {
+        //Change the number of inputs needed to account for puzzle size
         cout << "Enter your puzzle, use a zero to represent the blank" << endl;
         cout << "Enter the first row, use space or tabs between numbers: ";
         cin >> num1 >> num2 >> num3;
@@ -43,6 +44,7 @@ int main() {
         cout << endl;
     }
     else if (chooseType == 2) {
+        //Change the number of inputs needed to account for puzzle size
         //Doable case
         num1 = 0;
         num2 = 1; 
@@ -61,7 +63,8 @@ int main() {
     //              1  [ 4, 5 , 6 ]
     //              2  [ 7, 8 , 0 ]
 
-    int puzzle [3][3] = {
+    //Change the number of inputs needed to account for puzzle size
+    int puzzle [row][column] = {
         {num1, num2, num3},
         {num4, num5, num6},
         {num7, num8, num9}
@@ -69,8 +72,8 @@ int main() {
 
 
     //Find location of 0
-    for(int i = 0; i < 3; ++i) { //Copy over contents to our own array in problem class and copy to inital
-        for(int j = 0; j < 3; ++j) {
+    for(int i = 0; i < row; ++i) { //Copy over contents to our own array in problem class and copy to inital
+        for(int j = 0; j < column; ++j) {
            if(puzzle[i][j] == 0) {
                 rowZero = j; //j is reprsented as colums(x)
                 colZero = i; // i is represented as rows(y)
@@ -79,13 +82,18 @@ int main() {
     }
     
 
-    Problem prob(puzzle, rowZero, colZero);
+    Problem prob(puzzle, rowZero, colZero, row, column);
 
     cout << "Enter your choice of algorithm" << endl;
     cout << "1.Uniform Cost Search" << endl;
     cout << "2.A* with the Misplaced Tile heuristic" << endl;
     cout << "3.A* with the Euclidean distance heuristic" << endl;
     cin >> chooseProb; 
+    cout << endl;
+
+
+    cout << "Initial State" << endl;
+    prob.printArray();
     cout << endl;
 
     if(chooseProb == 1) {
@@ -108,6 +116,7 @@ int main() {
         AstarMisplaceTile(prob);
     }
     else if(chooseProb == 3) {
+        // A* with the Euclidean Distance heuristic: Same as above, but except we use the sum of all tiles in Euclidean distance for h(n)
         AstarEuclidian(prob);
     }
 
@@ -145,23 +154,6 @@ bool withinExplored(priority_queue<Problem> explored, Problem choice) {
     return false;
 }
 
-void getGoalPath(Problem backTrace, Problem initial) {
-    if(sameArray(backTrace, initial)) {
-        goalPath.push_back(backTrace);
-        return;   
-    }
-
-    getGoalPath(backTrace.getPrev(), initial);
-    goalPath.push_back(backTrace);
-}
-
-void printGoalPath() {
-    for(int i = 0; i < goalPath.size(); ++i) {
-        goalPath.at(i).printArray();
-        cout << endl;
-    }
-}
-
 void UniformCostSearch(Problem prob) {
     //Implement unfiorm cost search
     priority_queue<Problem> frontier; //Sort by cost + heuristic values from least to greatest
@@ -192,6 +184,7 @@ void UniformCostSearch(Problem prob) {
         RightChoice = tempFrontierFront;
     
         if(tempFrontierFront.isGoal()){
+            cout << endl;
             cout << "Found Goal state!" << endl;
             cout << "The Depth of the Goal Node: " << tempFrontierFront.getCost() << endl;
             cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
@@ -269,12 +262,11 @@ void AstarMisplaceTile(Problem prob){
         RightChoice = tempFrontierFront;
     
         if(tempFrontierFront.isGoal()){
+            cout << endl;
             cout << "Found Goal state!" << endl;
             cout << "The Depth of the Goal Node: " << tempFrontierFront.getCost() << endl;
             cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
-            cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
-            getGoalPath(tempFrontierFront, prob);
-            printGoalPath();
+            cout << "Number of Nodes expanded/explored: " << explored.size() << endl << endl;
             break;
         }
 
@@ -292,7 +284,6 @@ void AstarMisplaceTile(Problem prob){
         DownChoice.setHeuristic(DownChoice.numMisplacedTiles());
         LeftChoice.setHeuristic(LeftChoice.numMisplacedTiles());
         RightChoice.setHeuristic(RightChoice.numMisplacedTiles());
-
 
         //For uniform cost search, the heuristic is always just the depth at which the node is at
         //On top of checking if move is valid, must also check if its repeated
@@ -329,7 +320,7 @@ void AstarEuclidian(Problem prob) {
     // From there, we insert it into the frontier by priority and continue to pop off and expand again until goal state found
     //First we need to initalize a priority queue
     priority_queue<Problem> frontier;
-    prob.setHeuristic(prob.computeTotalHeuristic());
+    prob.setHeuristic(prob.computeEuclideanHeuristic());
     frontier.push(prob); //Initialize frontier with inital state
     priority_queue<Problem> explored;
 
@@ -353,6 +344,7 @@ void AstarEuclidian(Problem prob) {
         RightChoice = tempFrontierFront;
     
         if(tempFrontierFront.isGoal()) {
+            cout << endl;
             cout << "Found Goal state!" << endl;
             cout << "The Depth of the Goal Node: " << tempFrontierFront.getCost() << endl;
             cout << "Max number of Nodes in frontier at one time: " << MAX_FRONTIER << endl;
@@ -370,10 +362,10 @@ void AstarEuclidian(Problem prob) {
         right = RightChoice.moveRight();
 
         //Now we get the heuristic by caluclating Euclidean distance (sqrt(x2-x1)^2 + (y2-y1)^2)
-        UpChoice.setHeuristic(UpChoice.computeTotalHeuristic());  // new func .euclideanDist ? 
-        DownChoice.setHeuristic(DownChoice.computeTotalHeuristic());
-        LeftChoice.setHeuristic(LeftChoice.computeTotalHeuristic());
-        RightChoice.setHeuristic(RightChoice.computeTotalHeuristic());
+        UpChoice.setHeuristic(UpChoice.computeEuclideanHeuristic());  // new func .euclideanDist ? 
+        DownChoice.setHeuristic(DownChoice.computeEuclideanHeuristic());
+        LeftChoice.setHeuristic(LeftChoice.computeEuclideanHeuristic());
+        RightChoice.setHeuristic(RightChoice.computeEuclideanHeuristic());
 
 
         //For uniform cost search, the heuristic is always just the depth at which the node is at
@@ -404,4 +396,3 @@ void AstarEuclidian(Problem prob) {
         }
     }
 }
-

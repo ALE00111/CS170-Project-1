@@ -5,6 +5,7 @@
 using namespace std;
 
 Problem::Problem() {
+    //Change the number of rows and columsn needed to account for puzzle size
     rows = 3;
     columns = 3;
     cost = 0;
@@ -12,8 +13,7 @@ Problem::Problem() {
     prev = nullptr;
 }
 
-
-Problem::Problem(int puzzle [3][3], int zeroX, int zeroY) {
+Problem::Problem(int puzzle [3][3], int zeroX, int zeroY, int r, int c) {
     //In C++ we can't assign arrays specifically to each other and must do each element one by one
     for(int i = 0; i < 3; ++i) { //Copy over contents to our own array in problem class and copy to inital
         for(int j = 0; j < 3; ++j) {
@@ -23,19 +23,11 @@ Problem::Problem(int puzzle [3][3], int zeroX, int zeroY) {
     }
     zeroTileX = zeroX;
     zeroTileY = zeroY;
-    rows = 3;
-    columns = 3;
+    rows = r;
+    columns = c;
     cost = 0;
     heuristic = 0;
     prev = nullptr;
-}
-
-void Problem::setPrev(Problem parent) {
-    prev = &parent;
-}
-
-Problem Problem::getPrev() {
-    return *prev;
 }
 
 bool Problem::moveUp() {
@@ -134,10 +126,6 @@ bool Problem::moveRight() {
     return true;
 }
 
-int Problem::getValue(int y, int x) {
-    return array[y][x];
-}
-
 int Problem::getCost() const {
     return cost;
 }
@@ -151,18 +139,6 @@ bool Problem::isGoal(){
         }
     }
     return true;
-}
-
-void Problem::setNewArray(int oldArray[3][3]) {
-    for(int r = 0; r < 3; ++r) {
-        for(int c = 0; c < 3; ++c) {
-            array[r][c] = oldArray[r][c];
-            if(oldArray[r][c] == 0) {
-                zeroTileX = c; 
-                zeroTileY = r; 
-            }
-        }
-    }
 }
 
 void Problem::printArray() const {
@@ -198,27 +174,13 @@ int Problem::estimatedCost() {
     return heuristic + cost;
 }
 
-
-void Problem::printzeroTileX() const{
-    cout << zeroTileX << endl;
-}
-
-void Problem::printzeroTileY() const{
-    cout << zeroTileY << endl;
-}
-
 //Overloading Operators for priority Queue
 bool Problem::operator< (const Problem& copy) const {
     //Overload this comparison operator to make it so it takes the smallest of the two
     return (heuristic+ cost) > (copy.heuristic + copy.cost);
 }
 
-//Overloading Operators for priority Queue
-// bool Problem::operator>(const Problem& copy) const {
-//     return (heuristic+ cost) < (copy.heuristic + copy.cost);
-// }
-
-// helper function
+// helper function for euclidean algorithm to find the coordinates for a specific num tile
 pair<int, int> Problem::goalCoordinates(int puzzleNum) {
     for (int row = 0; row < 3; row++) {
         for (int column = 0; column < 3; column++) {
@@ -231,7 +193,8 @@ pair<int, int> Problem::goalCoordinates(int puzzleNum) {
                         // Euclidean calculation in the actual function
 }
 
-double Problem::computeTotalHeuristic() {
+//uses Euclidean algorithm for finding heuristic.
+double Problem::computeEuclideanHeuristic() {
     // the function must be double since we are dealing with sqrt and there will be decimals
     double totalHueristic = 0.0;
 
@@ -239,11 +202,6 @@ double Problem::computeTotalHeuristic() {
         for (int currentColumn = 0; currentColumn < 3; currentColumn++) {
             // save the numbers from the array in an int in order to use the helper later
             int puzzleNum = array[currentRow][currentColumn];
-            // if (puzzleNum == goal[currentRow][currentColumn]) { //  not needed since it will be included
-                                                                // in calculation below anyway
-            //     totalHueristic += 0;
-            // }
-
             if (puzzleNum != 0) { // exclude the 0 tile
             // user helper function to get the goal coordinates for the number in the puzzle
                 pair<int, int> correctAllocation = goalCoordinates(puzzleNum);
