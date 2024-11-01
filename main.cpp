@@ -174,8 +174,6 @@ void UniformCostSearch(Problem prob) {
 
     while(!frontier.empty()){
         tempFrontierFront = frontier.top();
-        cout << "The best state to expand with g(n) = " << frontier.top().getCost() << " and h(n) = " << frontier.top().getHeurisitc() << " is... " << endl;
-        frontier.top().printArray();
         frontier.pop();
         //Now removing leaf node and getting all possibilties 
         UpChoice = tempFrontierFront;
@@ -184,6 +182,7 @@ void UniformCostSearch(Problem prob) {
         RightChoice = tempFrontierFront;
     
         if(tempFrontierFront.isGoal()){
+            tempFrontierFront.printArray();
             cout << endl;
             cout << "Found Goal state!" << endl;
             cout << "The Depth of the Goal Node: " << tempFrontierFront.getCost() << endl;
@@ -191,9 +190,11 @@ void UniformCostSearch(Problem prob) {
             cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
             break;
         }
-
+        
+        cout << "The best state to expand with g(n) = " << tempFrontierFront.getCost() << " and h(n) = " << tempFrontierFront.getHeurisitc() << " is... " << endl;
+        tempFrontierFront.printArray();
         explored.push(tempFrontierFront);
-        cout << "Expanding this node" << endl;
+        cout << "Expanding this node..." << endl;
         cout << endl;
 
         up = UpChoice.moveUp();
@@ -252,8 +253,6 @@ void AstarMisplaceTile(Problem prob){
 
     while(!frontier.empty()){
         tempFrontierFront = frontier.top();
-        cout << "The best state to expand with g(n) = " << frontier.top().getCost() << " and h(n) = " << frontier.top().getHeurisitc() << " is... " << endl;
-        frontier.top().printArray();
         frontier.pop();
         //Now removing leaf node and getting all possibilties 
         UpChoice = tempFrontierFront;
@@ -262,6 +261,7 @@ void AstarMisplaceTile(Problem prob){
         RightChoice = tempFrontierFront;
     
         if(tempFrontierFront.isGoal()){
+            tempFrontierFront.printArray();
             cout << endl;
             cout << "Found Goal state!" << endl;
             cout << "The Depth of the Goal Node: " << tempFrontierFront.getCost() << endl;
@@ -270,8 +270,11 @@ void AstarMisplaceTile(Problem prob){
             break;
         }
 
+
+        cout << "The best state to expand with g(n) = " << tempFrontierFront.getCost() << " and h(n) = " << tempFrontierFront.getHeurisitc() << " is... " << endl;
+        tempFrontierFront.printArray();
         explored.push(tempFrontierFront);
-        cout << "Expanding this node" << endl;
+        cout << "Expanding this node..." << endl;
         cout << endl;
 
         up = UpChoice.moveUp();
@@ -335,15 +338,15 @@ void AstarEuclidian(Problem prob) {
 
     while(!frontier.empty()) {
         tempFrontierFront = frontier.top();
-        frontier.top().printArray();
         frontier.pop();
         //Now removing leaf node and getting all possibilties 
         UpChoice = tempFrontierFront;
         DownChoice = tempFrontierFront;
         LeftChoice = tempFrontierFront;
         RightChoice = tempFrontierFront;
-    
+
         if(tempFrontierFront.isGoal()) {
+            tempFrontierFront.printArray();
             cout << endl;
             cout << "Found Goal state!" << endl;
             cout << "The Depth of the Goal Node: " << tempFrontierFront.getCost() << endl;
@@ -351,9 +354,11 @@ void AstarEuclidian(Problem prob) {
             cout << "Number of Nodes expanded/explored: " << explored.size() << endl;
             break;
         }
-
+        
+        cout << "The best state to expand with g(n) = " << tempFrontierFront.getCost() << " and h(n) = " << tempFrontierFront.getHeurisitc() << " is... " << endl;
+        tempFrontierFront.printArray();
         explored.push(tempFrontierFront);
-        cout << "Expanding this node" << endl;
+        cout << "Expanding this node..." << endl;
         cout << endl;
 
         up = UpChoice.moveUp();
