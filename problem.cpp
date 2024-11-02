@@ -10,7 +10,6 @@ Problem::Problem() {
     columns = 3;
     cost = 0;
     heuristic = 0;
-    prev = nullptr;
 }
 
 Problem::Problem(int puzzle [3][3], int zeroX, int zeroY, int r, int c) {
@@ -27,7 +26,6 @@ Problem::Problem(int puzzle [3][3], int zeroX, int zeroY, int r, int c) {
     columns = c;
     cost = 0;
     heuristic = 0;
-    prev = nullptr;
 }
 
 bool Problem::moveUp() {
@@ -168,10 +166,6 @@ void Problem::setHeuristic(int hVal) {
 
 int Problem::getHeurisitc() const {
     return heuristic;
-}
-
-int Problem::estimatedCost() {
-    return heuristic + cost;
 }
 
 //Overloading Operators for priority Queue

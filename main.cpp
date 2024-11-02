@@ -23,39 +23,13 @@ int main() {
     const int row = 3; //Make sure to change this value to the size needed
     const int column = 3; //Make sure to change this value to the size needed
 
-    int num1, num2, num3, num4, num5, num6, num7, num8, num9; //Change the number of inputs needed to accoutn for puzzle size
+    int num;
     int rowZero, colZero;
     int chooseType;
     int chooseProb;
 
     cin >> chooseType;
-    
-    if(chooseType == 1) {
-        //Change the number of inputs needed to account for puzzle size
-        cout << "Enter your puzzle, use a zero to represent the blank" << endl;
-        cout << "Enter the first row, use space or tabs between numbers: ";
-        cin >> num1 >> num2 >> num3;
-        cout << endl;
-        cout << "Enter the second row, use space or tabs between numbers: ";
-        cin >> num4 >> num5 >> num6;
-        cout << endl;
-        cout << "Enter the third row, use space or tabs between numbers: ";
-        cin >> num7 >> num8 >> num9;
-        cout << endl;
-    }
-    else if (chooseType == 2) {
-        //Change the number of inputs needed to account for puzzle size
-        //Doable case
-        num1 = 0;
-        num2 = 1; 
-        num3 = 2;
-        num4 = 4;
-        num5 = 5;
-        num6 = 3;
-        num7 = 7;
-        num8 = 8;
-        num9 = 6;
-    }
+    int puzzle[row][column];
 
     //Representation of eight puzzle
     //indexesX           0  1   2
@@ -63,13 +37,30 @@ int main() {
     //              1  [ 4, 5 , 6 ]
     //              2  [ 7, 8 , 0 ]
 
-    //Change the number of inputs needed to account for puzzle size
-    int puzzle [row][column] = {
-        {num1, num2, num3},
-        {num4, num5, num6},
-        {num7, num8, num9}
-    };
-
+    
+    if(chooseType == 1) {
+        for(int i = 0; i < row; ++i) {
+            cout << "Enter into row " << i + 1 << ", use space or tabs between numbers: ";
+            for(int j = 0; j < column; ++j) {
+                cin >> num;
+                puzzle[i][j] = num;
+            }
+            cout << endl;
+        }
+    }
+    else if (chooseType == 2) { //Default case for testing
+        //Change the number of inputs needed to account for puzzle size
+        //Doable case
+        puzzle[0][0] = 0;
+        puzzle[0][1] = 1;
+        puzzle[0][2] = 2;
+        puzzle[1][0] = 4;
+        puzzle[1][1] = 5;
+        puzzle[1][2] = 3;
+        puzzle[2][0] = 7;
+        puzzle[2][1] = 8;
+        puzzle[2][2] = 6;
+    }
 
     //Find location of 0
     for(int i = 0; i < row; ++i) { //Copy over contents to our own array in problem class and copy to inital
@@ -367,7 +358,7 @@ void AstarEuclidian(Problem prob) {
         right = RightChoice.moveRight();
 
         //Now we get the heuristic by caluclating Euclidean distance (sqrt(x2-x1)^2 + (y2-y1)^2)
-        UpChoice.setHeuristic(UpChoice.computeEuclideanHeuristic());  // new func .euclideanDist ? 
+        UpChoice.setHeuristic(UpChoice.computeEuclideanHeuristic()); 
         DownChoice.setHeuristic(DownChoice.computeEuclideanHeuristic());
         LeftChoice.setHeuristic(LeftChoice.computeEuclideanHeuristic());
         RightChoice.setHeuristic(RightChoice.computeEuclideanHeuristic());

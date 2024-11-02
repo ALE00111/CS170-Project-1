@@ -15,7 +15,6 @@ class Problem {
         bool moveRight(); //Moves 0 tile right
         void setHeuristic(int hVal);
         int getHeurisitc() const;
-        int estimatedCost();
         bool isGoal();
         int getCost() const;
         int numMisplacedTiles();
@@ -37,5 +36,4 @@ class Problem {
             {4, 5, 6},
             {7, 8, 0}
         };
-        Problem* prev;
 };
